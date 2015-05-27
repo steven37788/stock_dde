@@ -1,3 +1,5 @@
+-- "股票代码","最新价","涨跌幅","换手率(%)","量比","BBD(万)","成交量","通吃率","DDX","DDY","DDZ","10日DDX","10日DDY","连续","特大单差","大单差","中单差","小单差","单数比"
+
 CREATE TABLE t_dde(
 id INT PRIMARY KEY AUTO_INCREMENT,
 stockcode   VARCHAR(16) NOT NULL ,
@@ -19,6 +21,6 @@ bigdiff     float(8,2) NOT NULL ,
 middlediff  float(8,2) NOT NULL ,
 smalldiff   float(8,2) NOT NULL ,
 sheetrate   float(8,2) NOT NULL ,
-time        TIMESTAMP NULL DEFAULT now()
+updatetime  TIMESTAMP NULL DEFAULT now()
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE UNIQUE INDEX t_IDX_0 on t_dde(price);
+CREATE UNIQUE INDEX t_IDX_0 on t_dde(stockcode,price,updatetime);
