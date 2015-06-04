@@ -1,12 +1,16 @@
 var request = require('request');
+var Iconv = require('iconv-lite');
 var cheerio = require('cheerio');
 var mysql = require('./mysql.js');
+var logger = require('./applog').logger;
 
+//var log = function(str){
+//    var time=geddy.date.strftime(new Date(), '%Y.%m.%d %H:%M:%S')
+//    logger.info(time+': '+str);
+//}
 
-
-var log = function(str){
-    var time=geddy.date.strftime(new Date(), '%Y.%m.%d %H:%M:%S')
-    console.log(time+': '+str);
+var headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
 }
 
 var data = '';
@@ -22,22 +26,28 @@ function MyUtil() {
 
     this.load = function (url, cb) {
 
-        request(url, function(error, response, body) {
+            request({
+                    encoding: null,
+                    url: url,
+                    headers: headers
+            },
+            function(error, response, body) {
             if (error) {
-                console.log("发生服务器错误500");
+                logger.info("发生服务器错误500");
                 // 处理error
                 if (typeof cb === 'function') {
                     cb(error, null);
                 };
             } else {
-                console.log(body);
+                var newbody = Iconv.decode(body, 'gb2312').toString();
+                logger.info(newbody);
 
                 try {
-                    eval(body);
+                    eval(newbody);
                 }
                 catch (exception) {
-                    console.log("eval exception");
-                    console.log(exception);
+                    logger.info("eval exception");
+                    logger.info(exception);
                 }
 
 
@@ -48,14 +58,14 @@ function MyUtil() {
 
 
             if(typeof myArray=="undefined"){
-                console.log('eval 未起效。');
-                console.log(body);
+                logger.info('eval 未起效。');
+                logger.info(body);
 
                 return false;
             } else {
 
-                //console.log(myArray);
-                console.log("*****************\n");
+                //logger.info(myArray);
+                logger.info("*****************\n");
 
                 if(typeof ddx_update=="undefined"){
                     alert('ddx_update 没有数值，请检查。');
@@ -65,10 +75,10 @@ function MyUtil() {
                 sortData(myArray);
 
                 var data = getData ();
-                //console.log(data);
+                //logger.info(data);
                 mysql.insertDataBase(data, ddx_update);
 
-                console.log("MyUtil.load end\n");
+                logger.info("MyUtil.load end\n");
             }
         })
     }
@@ -87,21 +97,21 @@ function sortByNumber(n,s,p, myArray)
         }
     );
 
-    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+    logger.info('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
 
-    //console.log(myArray);
+    //logger.info(myArray);
 }
 
 function sortData(myArray) {
 
-    //console.log(myArray);
+    //logger.info(myArray);
 
 
     sortByNumber(8, -1, 1, myArray);
 
     data =  myArray;
 
-    //console.log(myArray);
+    //logger.info(myArray);
 }
 
 module.exports = new MyUtil();
