@@ -53,7 +53,7 @@ function makeSql(data, ddx_update) {
 var options = {
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'Derman',
     database: 'nodejs',
     port: 3306
 };
