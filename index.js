@@ -13,16 +13,11 @@ var qurl = "http://www.dingniugu.com/ddxdata/ddedata.php?";
 var index_url = qurl + 'pid=8&order=-1'+ "&rand=" + Math.round(Math.random() * 10000);
 var index_url1 = qurl + 'pid=50&order=-1'+ "&rand=" + Math.round(Math.random() * 10000);
 
-var arrStr = new Array();
+var arrHomePageIndexURLStr = new Array();
 var arrFunc = new Array();
 
 var headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36'
-}
-
-var data = '';
-function getData() {
-    return data;
 }
 
 function sortByNumber(n,s,p, myArray)
@@ -36,18 +31,9 @@ function sortByNumber(n,s,p, myArray)
             return s*(parseFloat(x[n])-parseFloat(y[n]));
         }
     );
-
-    logger.info('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
 }
 
-function sortData(myArray) {
-
-    sortByNumber(8, -1, 1, myArray);
-
-    data =  myArray;
-}
-
-var dealHomepage = function(myArray, ddx_update, addon) {
+var dealHomepage = function(myArray, ddx_update) {
 
     if(typeof myArray=="undefined"){
         logger.info('eval 未起效。');
@@ -55,37 +41,58 @@ var dealHomepage = function(myArray, ddx_update, addon) {
         return false;
     } else {
 
-        logger.info("dealHomepage start");
+        async.series([
+            function(callback) {
+                logger.info("dealHomepage start");
 
-        if(typeof ddx_update=="undefined"){
-            logger.info('ddx_update 没有数值，请检查。');
-            return false;
-        }
+                if(typeof ddx_update=="undefined"){
+                    logger.info('ddx_update 没有数值，请检查。');
+                    return false;
+                }
 
-        sortData(myArray);
+                sortByNumber(8, -1, 1, myArray);
 
-        var data = getData ();
-        //logger.info(data);
-        mysql_homepage.insertDataBase_homepage(data, ddx_update);
+                callback(null, 'one');
 
-        logger.info("dealHomepage end\n");
+            },
+            function(callback) {
+                mysql_homepage.insertDataBase_homepage(myArray, ddx_update);
+
+                setTimeout(function(){
+                    callback(null, 'two');
+                }, 100)
+            }
+        ],
+
+        function(err, results) {
+
+        });
     }
 }
 
+
+
 function getHomePageData () {
-    for (var i = 0; i < 30; i++) {
-        var index_url = qurl + 'pid=' + i.toString() + '&order=-1&rand=' + Math.round(Math.random() * 10000);
+    var count = 0;
+    async.whilst (
+        function () { return count < 30; },
+        function (callback) {
 
-        arrStr.push(index_url); //only for print
+            logger.info(">---- begin request data in Page number is = " + count.toString());
 
-        logger.info(i.toString());
-        //getData(i, index_url);
+            var index_url = qurl + 'pid=' + count.toString() + '&order=-1&rand=' + Math.round(Math.random() * 10000);
+            logger.info(index_url);
+            arrHomePageIndexURLStr.push(index_url); //only for print
 
-        myUtil.sleep(1000, function() {
-            // executes after one second, and blocks the thread
             myUtil.loadRequest(index_url, dealHomepage, 'dealHomepage');
-        });
-    }
+
+            count++;
+            setTimeout(callback, 1000);
+        },
+        function (err) {
+            logger.info("request homepage data end");
+        }
+    );
 }
 
 function getBase64Code(stockcode) {
@@ -125,11 +132,7 @@ function getUrlFromCode(stockcode) {
     return url;
 }
 
-//getHomePageData ();
-////
-//logger.info(arrStr);
-////
-//logger.info('application end');
+
 
 function getStockCode () {
     var stock_url = rooturl + '/newdata/stockcode.js';
@@ -137,7 +140,7 @@ function getStockCode () {
     myUtil.loadRequest(stock_url, dealStockArray, 'dealStockArray');
 }
 
-var dealStockArray = function(stockCodeArray, RecordCount, addon) {
+var dealStockArray = function(stockCodeArray, RecordCount) {
 
     if(typeof stockCodeArray =="undefined"){
         logger.info('eval 未起效。');
@@ -256,6 +259,11 @@ var dealStockData = function(data, area, stockcode) {
     }
 }
 
+
+//取首页数据，一共发送30个首页的派生的URL, 每一页包含的每一行代表一个股票每日多次更新的最后数据，我们一般只要在收盘后更新一次入库就可以了。
+getHomePageData ();
+
+//按照股票的列表，依次取股票的120天来，每个开盘日的数据。
 getStockCode();
 
 

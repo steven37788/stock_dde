@@ -1,3 +1,4 @@
+var async = require('async');
 var logger = require('./applog').logger;
 
 var titleNumber = new Array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18);
@@ -5,21 +6,44 @@ var type = new Array(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
 var titleText  = new Array("股票代码","最新价","涨跌幅","换手率(%)","量比","BBD(万)","成交量","通吃率","DDX","DDY","DDZ","10日DDX","10日DDY","连续","特大单差","大单差","中单差","小单差","单数比");
 
 exports.insertDataBase_homepage = function (data, ddx_update) {
-    for(var i in data) {
 
-        var sql = makeSql(data[i], ddx_update);
+    async.series([
+        function(){
+            var count = 0;
+            async.whilst(
+                function () {return count < data.length; },
+                function (callback) {
 
-        logger.info(sql);
+                    var sql = makeSql(data[count], ddx_update);
 
-        var options = {
-            'sql' : sql,
-            'args' : ''
+                    logger.info(sql);
+
+                    var options = {
+                        'sql': sql,
+                        'args': ''
+                    }
+
+                    execQuery_homepage(options, cb);
+
+                    function cb (error) {
+                        logger.info('DB-获取数据库连接异常！');
+                        //throw error;
+                        cb(error);
+                    }
+
+                    count ++;
+
+                    setTimeout(callback, 1000);
+                },
+                function(err, results){
+                    logger.info("dealHomepage end");
+                }
+            )
+        },
+        function(){
+            logger.info("insertDataBase_homepage end");
         }
-
-        execQuery(options);
-
-        logger.info('execQuery end');
-    }
+    ]);
 }
 
 function makeSql(data, ddx_update) {
@@ -39,8 +63,7 @@ function makeSql(data, ddx_update) {
 
     sql += "'" + ddx_update + "'";
 
-    //var insertsql = 'insert ignore into t_dde values ' + '(' + sql + ')';
-    var insertsql = 'insert ignore into t_dde values ' + '(' + sql + ')';
+    var insertsql = 'insert into t_dde values ' + '(' + sql + ')';
 
     //logger.info(insertsql);
 
@@ -73,45 +96,40 @@ var pool = mysql.createPool(options);
 /**
  * 执行查询
  */
-function execQuery(options) {
+
+
+function execQuery_homepage(options, cb) {
+
     pool.getConnection(function(error, connection) {
+        if (error != null) {
+            // 查询参数
+            var sql = options['sql'];
+            var args = options['args'];
+            var handler = options['handler'];
 
-        if(error) {
-            logger.info('DB-获取数据库连接异常！');
-            throw error;
-        }
+            // 执行查询
+            var query = connection.query(sql, function (err, results) {
 
-        // 查询参数
-        var sql = options['sql'];
-        var args = options['args'];
-        var handler = options['handler'];
-
-        // 执行查询
-        var query = connection.query(sql, function(error, results) {
-
-            if (error != null) {
-                logger.info(error);
-            }
-            else {
-                logger.info(results);
-            }
-
-            if(error) {
-                logger.info('DB-执行查询语句异常！');
-                logger.info(error);
-                //throw error;
-            }
-
-            // 返回连接池
-            connection.release(function(error) {
-                if(error) {
-                    logger.info('DB-关闭数据库连接异常！');
-                    logger.info(error);
-                    //throw error;
+                if (err) {
+                    logger.info('DB-执行查询语句异常！');
+                    logger.info(err.message);
                 }
-            });
-        });
+                else {
+                    //logger.info(results);
+                }
 
-        //logger.info(query.sql);
+                // 返回连接池
+                connection.release(function (e) {
+                    if (e) {
+                        logger.info('DB-关闭数据库连接异常！');
+                        logger.info(e.message);
+                        //throw error;
+                    }
+                });
+            });
+        }
+        else {
+            cb(error);
+        }
     });
 };

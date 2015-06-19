@@ -177,31 +177,6 @@ function store_t_dayData (openingPrices, closeingPrices, highestPrices, floorPri
     }
 }
 
-//function makeSql(data, ddx_update) {
-//    var sql;
-//    for (var i in data) {
-//        if(i != 0) {
-//            sql += "'" + data[i] + "'";
-//        }
-//        else
-//        {
-//            sql = "null," + data[i];
-//        }
-//
-//
-//        sql += ',';
-//    }
-//
-//    sql += "'" + ddx_update + "'";
-//
-//    //var insertsql = 'insert ignore into t_dde values ' + '(' + sql + ')';
-//    var insertsql = 'insert ignore into t_dde values ' + '(' + sql + ')';
-//
-//    //logger.info(insertsql);
-//
-//    return insertsql;
-//}
-
 
 /**
  * 数据库模块
