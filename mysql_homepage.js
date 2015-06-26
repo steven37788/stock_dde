@@ -101,7 +101,7 @@ var pool = mysql.createPool(options);
 function execQuery_homepage(options, cb) {
 
     pool.getConnection(function(error, connection) {
-        if (error != null) {
+        if (error == null) {
             // 查询参数
             var sql = options['sql'];
             var args = options['args'];

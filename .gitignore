@@ -3,4 +3,5 @@ node_modules/
 logs/*
 select1.sql
 doc/
+npm-debug.log
 

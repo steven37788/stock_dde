@@ -96,7 +96,7 @@ function store_t_dayData (openingPrices, closeingPrices, highestPrices, floorPri
     bbds, ddxs, ddys, listRates, sListDiffs, sInflows, mListDiffs, mInflows, xListDiffs, xInflows,
                           xxListDiffs, xxInflows, stockcode, data) {
 
-    var volumeSql = 'INSERT INTO T_DAYDATA VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    var volumeSql = 'INSERT INTO t_daydata VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     logger.info("开盘价包含的天数为" + openingPrices.length);
     logger.info("收盘价包含的天数为" + closeingPrices.length);
