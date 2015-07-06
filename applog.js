@@ -8,8 +8,8 @@ log4js.configure({
         }, //控制台输出
         {
             type: "dateFile",
-            filename: 'logs/log.log',
-            pattern: "_yyyy-MM-dd",
+            filename: 'logs/',
+            pattern: "debug_yyyy-MM-dd",
             alwaysIncludePattern: true,
             category: 'dateFileLog',
             backups: 14,
