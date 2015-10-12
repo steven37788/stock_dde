@@ -2,7 +2,7 @@
 
 本项目平台为Linux或者MacOS, 需要安装mysql, nodejs.  
 
---（以Ubuntu为例） 
+--（以Ubuntu为例）   
   安装mysql:   
   sudo apt-get install mysql-server  
   （数据库密码在脚本中找和做相应修改）  
