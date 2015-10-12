@@ -2,12 +2,21 @@
 
 本项目平台为Linux或者MacOS, 需要安装mysql, nodejs.  
 
-安装mysql:（以Ubuntu为例）  
-sudo apt-get install mysql-server  
-（数据库密码在脚本中找和做相应修改）  
-
-启动mysql:    
-sudo /etc/init.d/mysql start    
+--（以Ubuntu为例） 
+  安装mysql:   
+  sudo apt-get install mysql-server  
+  （数据库密码在脚本中找和做相应修改）  
+  
+  启动mysql:      
+  sudo /etc/init.d/mysql start
+  
+--（以MacOS为例）   
+  安装mysql:   
+  brew install mysql    
+  （数据库密码在脚本中找和做相应修改）    
+  
+  启动mysql:    
+  mysql.server start
 
 连接mysql:  
 mysql -u root -p  
