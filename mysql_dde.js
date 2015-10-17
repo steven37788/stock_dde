@@ -6,7 +6,7 @@ var math = require('mathjs');
 //var type = new Array(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
 //var titleText  = new Array("股票代码","最新价","涨跌幅","换手率(%)","量比","BBD(万)","成交量","通吃率","DDX","DDY","DDZ","10日DDX","10日DDY","连续","特大单差","大单差","中单差","小单差","单数比");
 
-exports.insertDataBase_dde = function (data, area, stockcode) {
+exports.insertDataBase_dayData = function (data, area, stockcode) {
 
     var openingPrices = data[16]; //开盘价
     var closeingPrices = data[0]; //收盘价

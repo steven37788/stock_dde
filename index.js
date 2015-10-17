@@ -248,14 +248,14 @@ var dealStockData = function(data, area, stockcode) {
         return false;
     } else {
 
-        logger.info("dealStock Data start -->");
+        logger.info("insertDataBase_dayData start -->");
 
         //logger.info(data);
         //logger.info(area);
 
-        mysql_dde.insertDataBase_dde(data, area, stockcode);
+        mysql_dde.insertDataBase_dayData(data, area, stockcode);
 
-        logger.info("<-- dealStock Data end\n");
+        logger.info("<-- insertDataBase_dayData end\n");
     }
 }
 
@@ -263,7 +263,7 @@ var dealStockData = function(data, area, stockcode) {
 //取首页数据，一共发送30个首页的派生的URL, 每一页包含的每一行代表一个股票每日多次更新的最后数据，我们一般只要在收盘后更新一次入库就可以了。
 getHomePageData ();
 
-//按照股票的列表，依次取股票的120天来，每个开盘日的数据。DDE标签。
+//按照股票的列表，依次取股票的120天来，每个开盘日的数据。Daydata。
 getStockCode();
 
 
