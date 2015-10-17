@@ -8,7 +8,6 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `t_daydata`;
 
 CREATE TABLE `t_daydata`(
-id INT PRIMARY KEY AUTO_INCREMENT,
 openingprice       float(8,2) NOT NULL ,
 closingprice       float(8,2) NOT NULL ,
 highestprice       float(8,2) NOT NULL ,
