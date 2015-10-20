@@ -27,5 +27,5 @@ middlediff  float(8,2) NOT NULL ,
 smalldiff   float(8,2) NOT NULL ,
 sheetrate   float(8,2) NOT NULL ,
 updatetime  TIMESTAMP NULL DEFAULT now()
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='主页上的实时刷新表';
-CREATE UNIQUE INDEX t_IDX_0 on t_dde(stockcode,price,updatetime);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='主页上的刷新表';
+CREATE UNIQUE INDEX t_IDX_dde on t_dde(stockcode,updatetime);

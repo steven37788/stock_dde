@@ -22,8 +22,8 @@ log4js.configure({
     }
 });
 
-var dateFileLog = log4js.getLogger('dateFileLog'); //输出到日期文件Log
-//var dateFileLog = log4js.getLogger('console'); //输出到console
+//var dateFileLog = log4js.getLogger('dateFileLog'); //输出到日期文件Log
+var dateFileLog = log4js.getLogger('console'); //输出到console
 
 exports.logger = dateFileLog;
 

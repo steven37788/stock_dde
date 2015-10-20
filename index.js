@@ -70,8 +70,6 @@ var dealHomepage = function(myArray, ddx_update) {
     }
 }
 
-
-
 function getHomePageData () {
     var count = 0;
     async.whilst (
@@ -155,14 +153,19 @@ var dealStockArray = function(stockCodeArray, RecordCount) {
 
         var i = 0;
         async.whilst(
-            //function () { return i < RecordCount; },
-            function () { return i < 1; },
+            function () { return i < RecordCount; },
+            //function () { return i < 1; },
             function (callback) {
-                var keyvalue = stockCodeArray[i];
-                logger.info(keyvalue);
+                var keyvaluepair = stockCodeArray[i];
 
-                //var stockcode = keyvalue[0];
-                var stockcode = "600035";
+                logger.info("typeof keyvaluepair is " + typeof(keyvaluepair))
+
+                var stockcode = keyvaluepair[0];
+
+                logger.info("股票数据循环开始，分析股票代码为" + stockcode);
+
+
+                //var stockcode = "600035"; 以一个股票进行测试，一般要有120条数据入库
 
                 logger.info("stockcode is " + stockcode);
 
@@ -223,6 +226,8 @@ var dealStockArray = function(stockCodeArray, RecordCount) {
                     }
                 );
 
+                logger.info("股票数据循环结束，分析股票代码为" + stockcode);
+
                 i++;
 
                 setTimeout(callback, 1000);
@@ -240,7 +245,7 @@ var dealStockArray = function(stockCodeArray, RecordCount) {
     }
 }
 
-var dealStockData = function(data, area, stockcode) {
+var dealStockData = function(data, stockcode) {
 
     if(typeof data=="undefined"){
         logger.info('eval 未起效。');
@@ -248,14 +253,14 @@ var dealStockData = function(data, area, stockcode) {
         return false;
     } else {
 
-        logger.info("insertDataBase_dayData start -->");
+        logger.info("<< -- dealStock Data start stockcode is " + stockcode);
 
         //logger.info(data);
         //logger.info(area);
 
-        mysql_dde.insertDataBase_dayData(data, area, stockcode);
+        mysql_dde.insertDataBase_dayData(data, stockcode);
 
-        logger.info("<-- insertDataBase_dayData end\n");
+        logger.info("dealStock Data end stockcode is " + stockcode + " -- >>\n");
     }
 }
 

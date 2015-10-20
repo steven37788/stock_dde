@@ -31,7 +31,7 @@ exports.loadRequest = function (url, cb, type, stockcode) {
             cb(stockCodeArray, RecordCount, null);
         }
         else if (typeof cb == 'function' && type == 'dealStockData') {
-            cb(data, area, stockcode);
+            cb(data, stockcode);
         }
 
         else {

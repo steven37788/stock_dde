@@ -30,4 +30,4 @@ xxInflow           float(8,2) NOT NULL ,
 stockcode          VARCHAR(16) NOT NULL ,
 updatedate         DATE NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='DDE指标日线表';
-CREATE UNIQUE INDEX t_IDX_0 on t_daydata(updatedate);
+CREATE UNIQUE INDEX t_IDX_daydata on t_daydata(stockcode, updatedate);

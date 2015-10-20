@@ -6,7 +6,7 @@ var math = require('mathjs');
 //var type = new Array(0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
 //var titleText  = new Array("股票代码","最新价","涨跌幅","换手率(%)","量比","BBD(万)","成交量","通吃率","DDX","DDY","DDZ","10日DDX","10日DDY","连续","特大单差","大单差","中单差","小单差","单数比");
 
-exports.insertDataBase_dayData = function (data, area, stockcode) {
+exports.insertDataBase_dayData = function (data, stockcode) {
 
     var openingPrices = data[16]; //开盘价
     var closeingPrices = data[0]; //收盘价
@@ -110,7 +110,7 @@ function store_t_dayData (openingPrices, closeingPrices, highestPrices, floorPri
     logger.info("DDY包含的天数为" + ddys.length);
     logger.info("单数比包含的天数为" + listRates.length);
     logger.info("小单差包含的天数为" + sListDiffs.length);
-    logger.info("小单流入金额包含的天数为" + sInflows[0].length);
+    logger.info("小单流入金额包含的天数为" + sInflows.length);
     logger.info("中单差包含的天数为" + mListDiffs.length);
     logger.info("中单流入金额包含的天数为" + mInflows.length);
     logger.info("大单差包含的天数为" + xListDiffs.length);
