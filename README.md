@@ -53,7 +53,7 @@ mkdir logs
 node index.js
 
 因为每条数据都要收集120天内的所有数据，所以如果只关心1个股票或者想测试，节省时间的，可以修改
-index.j中的dealStockArray函数。将其设置为只收集一个股票的信息。
+index.js中的dealStockArray函数。将其设置为只收集一个股票的信息。
 
 
 
