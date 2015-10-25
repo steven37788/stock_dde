@@ -16,7 +16,7 @@ exports.insertDataBase_homepage = function (data, ddx_update) {
 
                     var sql = makeSql(data[count], ddx_update);
 
-                    logger.info(sql);
+                    //logger.info(sql);
 
                     var options = {
                         'sql': sql,
@@ -27,8 +27,7 @@ exports.insertDataBase_homepage = function (data, ddx_update) {
 
                     function cb (error) {
                         logger.info('DB-获取数据库连接异常！');
-                        //throw error;
-                        cb(error);
+                        throw error;
                     }
 
                     count ++;

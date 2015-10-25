@@ -99,7 +99,7 @@ function getBase64Code(stockcode) {
     return s;
 }
 
-function getUrlFromCode(stockcode) {
+function getEncodeBuffer(stockcode) {
     var url = "";
     var urlbase = "YcaWN0aW9uPWRhdGEmc3RvY2tjb2RlPV";
     var section = stockcode.substring(0, 3);
@@ -138,6 +138,37 @@ function getStockCode () {
     myUtil.loadRequest(stock_url, dealStockArray, 'dealStockArray');
 }
 
+function getStockURL(encodebuffer, stockcode, url) {
+    var section = stockcode.substring(0, 3);
+
+    url += "/ddedata/gegu_ddedata.php?stockcode=";
+    url += encodebuffer;
+    url += "&u=&code="
+    url += stockcode;
+    url += "&text=";
+
+    if (section == "600" || section == "601" || section == "603") {
+
+        url += "SH";
+    }
+    else if (section == "000" || section == "200") {
+
+        url += "SZ";
+
+    }
+    else if (section == "300") {
+        url += "SZ";
+    }
+    else {
+        var info = util.format("有异常情况，股票代码为%s", stockcode);
+        logger.info(info);
+    }
+
+    var stockurl = url;
+
+    return stockurl;
+}
+
 var dealStockArray = function(stockCodeArray, RecordCount) {
 
     if(typeof stockCodeArray =="undefined"){
@@ -146,63 +177,31 @@ var dealStockArray = function(stockCodeArray, RecordCount) {
         return false;
     } else {
 
+        var stockcode = "600035"; //以一个股票进行测试，一般要有120条数据入库
+        RecordCount = 1;
+
         logger.info("dealStock Array start ---->");
 
-        //logger.info(stockCodeArray);
         logger.info("today stock total number is " + RecordCount + "\n");
 
         var i = 0;
         async.whilst(
             function () { return i < RecordCount; },
-            //function () { return i < 1; },
             function (callback) {
                 var keyvaluepair = stockCodeArray[i];
 
-                logger.info("typeof keyvaluepair is " + typeof(keyvaluepair))
-
                 var stockcode = keyvaluepair[0];
 
-                logger.info("股票数据循环开始，分析股票代码为" + stockcode);
-
-
-                //var stockcode = "600035"; 以一个股票进行测试，一般要有120条数据入库
-
-                logger.info("stockcode is " + stockcode);
+                logger.info("股票数据循环开始，分析股票代码为" + stockcode + "，股票的总数为" + RecordCount + "，分析的股票是第" + i+1 + "只");
 
                 var stockurl = "";
                 async.series([
                         function (callback) {
-                            logger.info("getStockData stock is " + stockcode);
+
                             var url = rooturl;
-                            var encodeurl = getUrlFromCode(stockcode);
-                            logger.info(encodeurl);
+                            var encodebuffer = getEncodeBuffer(stockcode);
 
-                            var section = stockcode.substring(0, 3);
-
-                            url += "/ddedata/gegu_ddedata.php?stockcode=";
-                            url += encodeurl;
-                            url += "&u=&code="
-                            url += stockcode;
-                            url += "&text=";
-
-                            if (section == "600" || section == "601" || section == "603") {
-
-                                url += "SH";
-                            }
-                            else if (section == "000" || section == "200") {
-
-                                url += "SZ";
-
-                            }
-                            else if (section == "300") {
-                                url += "SZ";
-                            }
-                            else {
-                                var info = util.format("有异常情况，股票代码为%s", stockcode);
-                                logger.info(info);
-                            }
-
-                            stockurl = url;
+                            stockurl = getStockURL(encodebuffer, stockcode, url);
 
                             logger.info('编码股票url结束! 股票url为' + stockurl);
 
@@ -214,19 +213,18 @@ var dealStockArray = function(stockCodeArray, RecordCount) {
                             myUtil.loadRequest(stockurl, dealStockData, 'dealStockData', stockcode);
 
                             callback(null, null);
+                        },
+
+                        function (callback) {
+                            logger.info('处理成功! 股票代码为' + stockcode + "\n");
                         }
                     ],
                     function (err, result) {
                         if (err) {
                             logger.info('处理错误! 股票代码为' + stockcode);
                         }
-                        else {
-                            logger.info('处理成功! 股票代码为' + stockcode + "\n");
-                        }
                     }
                 );
-
-                logger.info("股票数据循环结束，分析股票代码为" + stockcode);
 
                 i++;
 
